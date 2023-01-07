@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String
+  trades        trade[]
+  merged_trades merged_trade[]
+}
+
+model merged_trade {
+  id Int @id @default(autoincrement())
+
+  entryDate     DateTime               @db.DateTime(0)
+  exitDate      DateTime               @db.DateTime(0)
+  symbol        String                 @db.VarChar(255)
+  direction     merged_trade_direction
+  entryPrice    Float
+  exitPrice     Float
+  size          Float
+  pnl           Float
+  pnlPercentage Float
+  fee           Float
+  feeAsset      String                 @db.VarChar(255)
+  entryReason   String?                @db.VarChar(255)
+  exitReason    String?                @db.VarChar(255)
+  mistake       String?                @db.VarChar(255)
+  comment       String?                @db.VarChar(255)
+  createdAt     DateTime               @default(now()) @db.DateTime(6)
+  updatedAt     DateTime               @default(now()) @db.DateTime(6)
+  User          User?                  @relation(fields: [userId], references: [id])
+  userId        Int?
+  trades        trade[]
+
+  @@unique([entryDate, exitDate, userId])
+  @@index([entryDate])
+}
+
+model trade {
+  id                Int              @id @default(autoincrement())
+  exchangeTradeId   BigInt
+  exchangeOrderId   BigInt
+  symbol            String           @db.VarChar(255)
+  side              String           @db.VarChar(255)
+  price             Float
+  qty               Float
+  quoteQty          Float
+  realizedPnl       Float
+  marginAsset       String           @db.VarChar(255)
+  commission        Float
+  commissionAsset   String           @db.VarChar(255)
+  exchangeCreatedAt DateTime         @db.DateTime(0)
+  positionSide      String           @db.VarChar(255)
+  isBuyer           Int              @db.TinyInt
+  isMaker           Int              @db.TinyInt
+  isEntryTrade      Int              @default(0) @db.TinyInt
+  marketType        trade_marketType
+  exchange          trade_exchange
+  createdAt         DateTime         @default(now()) @db.DateTime(6)
+  updatedAt         DateTime         @default(now()) @db.DateTime(6)
+  User              User?            @relation(fields: [userId], references: [id])
+  userId            Int?
+  merged_trade      merged_trade?    @relation(fields: [merged_tradeId], references: [id])
+  merged_tradeId    Int?
+
+  @@unique([exchange, exchangeTradeId])
+  @@index([exchangeTradeId])
+}
+
+enum merged_trade_direction {
+  long
+  short
+}
+
+enum trade_marketType {
+  futures
+  spot
+}
+
+enum trade_exchange {
+  binance
+}
