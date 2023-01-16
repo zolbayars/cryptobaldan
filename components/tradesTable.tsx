@@ -63,26 +63,26 @@ async function TradesTable(props: TradesTableProps) {
     }
 
   return (
-      <table className='bg-white dark:bg-slate-800' aria-label="trades table">
+      <table className='bg-white dark:bg-slate-800 text-slate-300 border border-slate-500' aria-label="trades table">
         <thead>
           <tr>
-            <th>Entry</th>
-            <th>Exit</th>
-            <th>Symbol</th>
-            <th>Side</th>
-            <th>Entry</th>
-            <th>Exit</th>
-            <th>Size</th>
-            <th>Fee</th>
-            <th>PnL</th>
-            <th>PnL %</th>
+            <th className='border border-slate-500'>Entry</th>
+            <th className='border border-slate-500'>Exit</th>
+            <th className='border border-slate-500'>Symbol</th>
+            <th className='border border-slate-500'>Side</th>
+            <th className='border border-slate-500'>Entry</th>
+            <th className='border border-slate-500'>Exit</th>
+            <th className='border border-slate-500'>Size</th>
+            <th className='border border-slate-500'>Fee</th>
+            <th className='border border-slate-500'>PnL</th>
+            <th className='border border-slate-500'>PnL %</th>
           </tr>
         </thead>
         <tbody>
           {
             trades.map(trade => {
               return (
-                <tr key={trade.id} className='hover:bg-sky-700'>
+                <tr key={trade.id} className='hover:bg-sky-700 border border-slate-500'>
                   <td>{formatTimestamp(trade.entryDate as unknown as string)}</td>
                   <td>{formatTimestamp(trade.exitDate as unknown as string)}</td>
                   <td>{trade.symbol}</td>
